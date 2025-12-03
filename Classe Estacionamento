@@ -65,12 +65,12 @@ public class Estacionamento {
         this.fim = depois.format(formato);
 
         Duration duracao = Duration.between(this.agora, this.depois);
-        long minutosABS = duracao.toMinutes();
-        long horas = duracao.toHours();
-        double horasTot = minutosABS/60.0;
+        long minutosABS = duracao.toMinutes();         //-------------------------------------------
+        long horas = duracao.toHours();                    
+        double horasTot = minutosABS/60.0;                    
         double contagemHor = Math.ceil(horasTot);
         long minutos = duracao.toMinutesPart();
-        long segundos = duracao.toSecondsPart();
+        long segundos = duracao.toSecondsPart();        //Bloco dedicado ao cálculo do valor arrecadado
 
         if (contagemHor <= 1) {
             valorIn = 12;
@@ -79,7 +79,7 @@ public class Estacionamento {
             valorIn = 12 + (horasExc * 8);
         }
 
-        this.faturamentoAcumulado += valorIn;
+        this.faturamentoAcumulado += valorIn;           //-------------------------------------------------
 
 
         String duracaoFormatada = String.format("%02d:%02d:%02d", horas, minutos, segundos);
@@ -117,12 +117,12 @@ public class Estacionamento {
         LocalTime fimSim = LocalTime.parse(hora);
         Duration duracao = Duration.between(this.inicioSim, fimSim);
 
-        long minutosABS = duracao.toMinutes();
+        long minutosABS = duracao.toMinutes();        //-------------------------------------------
         long horas = duracao.toHours();
         double horasTot = minutosABS/60.0;
         double contagemHor = Math.ceil(horasTot);
         long minutos = duracao.toMinutesPart();
-        long segundos = duracao.toSecondsPart();
+        long segundos = duracao.toSecondsPart();     //Bloco dedicado ao cálculo do valor arrecadado
 
         if (contagemHor <= 1) {
             valorIn = 12;
@@ -131,7 +131,7 @@ public class Estacionamento {
             valorIn = 12 + (horasExc * 8);
         }
 
-        this.faturamentoAcumulado += valorIn;
+        this.faturamentoAcumulado += valorIn;         //-------------------------------------------
 
         String duracaoFormatada = String.format("%02d:%02d:%02d", horas, minutos, segundos);
 
