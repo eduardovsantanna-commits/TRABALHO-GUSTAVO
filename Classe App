@@ -42,7 +42,7 @@ public class App {
                 System.out.println("Cor do veículo: ");
                 v1.setCor(tc.nextLine());
 
-                boolean sucesso = est.entrarR(v1); 
+                boolean sucesso = est.entrarR(v1);         //Variável para certificar que a entrada foi permitida em função da quantidade de vagas.
 
                 if (sucesso) {
                     System.out.println("Você está indo embora? (SIM - 0 | NÃO - 1): ");
