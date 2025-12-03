@@ -1,0 +1,185 @@
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
+public class Estacionamento {
+    private String[] vagasDisp = new String[10];
+    private String[] placas = new String[10];
+    private LocalTime inicioSim;
+    private String inicio;
+    private String fim;
+    private LocalTime agora;
+    private LocalTime depois;
+    private double faturamentoAcumulado = 0.0;
+
+    public void mostrarPlacas(){
+        for(int i = 0; i < vagasDisp.length; i++){
+        if(vagasDisp[i] != null){
+            System.out.println(placas[i] + " vaga " + i);
+        }
+
+        }
+    }
+
+
+
+   public boolean entrarR(Veiculo v1) {
+        int vaga = encontrarVagaLivre();
+        
+        if (vaga == -1) {
+            System.out.println("❌ SEM VAGAS DISPONÍVEIS ❌");
+            return false; 
+        } 
+        
+        vagasDisp[vaga] = v1.getPlaca();
+        placas[vaga] = v1.getPlaca();
+        
+        this.agora = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("HH:mm:ss");
+        this.inicio = agora.format(formato);
+        
+        System.out.println("==================CHECK-IN==================");
+        System.out.println("Tipo: " + v1.getTipo());                                //Método auxiliado pelo Gemini
+        System.out.println("Placa: " + v1.getPlaca());
+        System.out.println("Marca: " + v1.getMarca());
+        System.out.println("Cor: " + v1.getCor());
+        System.out.println("--------------------------------------------");
+        System.out.println("Horário de Check-in: " + inicio);
+        System.out.println("============================================");
+        
+        return true;
+    }
+
+    public void sairR(Veiculo v1) {
+        double valorIn;
+        int vaga = encontrarVeiculoPorPlaca(v1.getPlaca());
+
+        if (vaga == -1) {
+            System.out.println("❌ Placa não encontrada no estacionamento!");
+            return;
+        }
+
+        this.depois = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("HH:mm:ss");
+        this.fim = depois.format(formato);
+
+        Duration duracao = Duration.between(this.agora, this.depois);
+        long minutosABS = duracao.toMinutes();
+        long horas = duracao.toHours();
+        double horasTot = minutosABS/60.0;
+        double contagemHor = Math.ceil(horasTot);
+        long minutos = duracao.toMinutesPart();
+        long segundos = duracao.toSecondsPart();
+
+        if (contagemHor <= 1) {
+            valorIn = 12;
+        } else {
+            double horasExc = contagemHor - 1;
+            valorIn = 12 + (horasExc * 8);
+        }
+
+        this.faturamentoAcumulado += valorIn;
+
+
+        String duracaoFormatada = String.format("%02d:%02d:%02d", horas, minutos, segundos);
+
+        System.out.println("==================CHECK-OUT==================");
+        System.out.println("Tipo: " + v1.getTipo());
+        System.out.println("Placa: " + v1.getPlaca());
+        System.out.println("Marca: " + v1.getMarca());
+        System.out.println("Cor: " + v1.getCor());
+        System.out.println("--------------------------------------------");
+        System.out.println("Horário de Check-out: " + fim);
+        System.out.println("Tempo de permanência: " + duracaoFormatada);
+        System.out.println("Valor: R$" + valorIn);
+
+        vagasDisp[vaga] = null;
+        placas[vaga] = null;
+        System.out.println(":) Vaga " + vaga + " liberada!");
+        System.out.println("============================================");
+    }
+
+    public void entrarS(String hora, Veiculo v1) {
+        this.inicioSim = LocalTime.parse(hora);
+        System.out.println("==================CHECK-IN (SIMULADO)==================");
+        System.out.println("Tipo: " + v1.getTipo());
+        System.out.println("Placa: " + v1.getPlaca());
+        System.out.println("Marca: " + v1.getMarca());
+        System.out.println("Cor: " + v1.getCor());
+        System.out.println("--------------------------------------------");
+        System.out.println("Horário de Check-in: " + inicioSim);
+        System.out.println("============================================");
+    }
+
+    public void sairS(String hora, Veiculo v1) {
+        double valorIn;
+        LocalTime fimSim = LocalTime.parse(hora);
+        Duration duracao = Duration.between(this.inicioSim, fimSim);
+
+        long minutosABS = duracao.toMinutes();
+        long horas = duracao.toHours();
+        double horasTot = minutosABS/60.0;
+        double contagemHor = Math.ceil(horasTot);
+        long minutos = duracao.toMinutesPart();
+        long segundos = duracao.toSecondsPart();
+
+        if (contagemHor <= 1) {
+            valorIn = 12;
+        } else {
+            double horasExc = contagemHor - 1;
+            valorIn = 12 + (horasExc * 8);
+        }
+
+        this.faturamentoAcumulado += valorIn;
+
+        String duracaoFormatada = String.format("%02d:%02d:%02d", horas, minutos, segundos);
+
+        System.out.println("==================CHECK-OUT (SIMULADO)==================");
+        System.out.println("Tipo: " + v1.getTipo());
+        System.out.println("Placa: " + v1.getPlaca());
+        System.out.println("Marca: " + v1.getMarca());
+        System.out.println("Cor: " + v1.getCor());
+        System.out.println("--------------------------------------------");
+        System.out.println("Horário de Check-out: " + fimSim);
+        System.out.println("Tempo de permanência: " + duracaoFormatada);
+        System.out.println("Valor: R$" + valorIn);
+        System.out.println("============================================");
+    }
+
+    public void buscarPlaca(String placa) {
+        boolean encontrado = false;
+        for (int i = 0; i < this.placas.length; i++) {
+            if (placa.equals(this.placas[i])) {
+                System.out.println("Veículo de placa " + placa + " está estacionado na vaga " + i + ".");
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            System.out.println("Vehicle not found.");
+        }
+    }
+
+    public int encontrarVagaLivre() {
+        for (int i = 0; i < vagasDisp.length; i++) {
+            if (vagasDisp[i] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int encontrarVeiculoPorPlaca(String placa) {
+        for (int i = 0; i < placas.length; i++) {
+            if (placa.equals(placas[i])) {
+                return i; // retorna a vaga
+            }
+        }
+        return -1; // não encontrado
+    }
+
+public void faturamentoTotal(){
+    System.out.println("Valor do faturamento: " + "R$" + this.faturamentoAcumulado);
+    }
+}
