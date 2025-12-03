@@ -1,0 +1,125 @@
+import java.util.Scanner;
+
+public class App {
+    public static void main(String[] args) {
+        Scanner tc = new Scanner(System.in);
+        Estacionamento est = new Estacionamento();
+        Byte res = 0;
+        
+        while (res != 7) {
+            System.out.println("===========Ema Park's=============");
+            System.out.println("O que você gostaria de fazer?");
+            System.out.println("1 - Estacionar;");
+            System.out.println("2 - Buscar placa;");
+            System.out.println("3 - Simular estadia;");
+            System.out.println("4 - Retirar veículo;");
+            System.out.println("5 - Mostrar veículos;");
+            System.out.println("6 - Mostrar faturamento;");
+            System.out.println("7 - Sair;");
+            System.out.println("-----------------------------------");
+
+            // Entrada de dados para "res"
+            if (tc.hasNextByte()) {
+                res = tc.nextByte();
+            } else {
+                System.out.println("Opção inválida. Tente novamente.");
+                tc.next(); 
+                continue;
+            }
+            tc.nextLine();
+            //Opção 1
+            if (res == 1) {
+                Veiculo v1 = new Veiculo();
+                System.out.println("Tipo do veículo (Ex: moto, carro...): ");
+                v1.setTipo(tc.nextLine());
+
+                System.out.println("Placa do veículo (Ex: XXXX-YYY): ");
+                v1.setPlaca(tc.nextLine());
+
+                System.out.println("Marca do veículo: ");
+                v1.setMarca(tc.nextLine());
+
+                System.out.println("Cor do veículo: ");
+                v1.setCor(tc.nextLine());
+
+                boolean sucesso = est.entrarR(v1); 
+
+                if (sucesso) {
+                    System.out.println("Você está indo embora? (SIM - 0 | NÃO - 1): ");
+                    Byte r = tc.nextByte();                                                     //Auxílio do Gemini.
+                    tc.nextLine();                                                              //Retonar ao menu no caso de não haver vagas
+
+                    if (r == 0) {
+                        est.sairR(v1);
+                    }
+                }
+            }
+            //Opção 2
+            if (res == 2) {
+                System.out.println("Insira a placa do veículo desejado: ");
+                String placa = tc.nextLine();
+                est.buscarPlaca(placa);
+            }
+            //Opção 3
+            if (res == 3) {
+                Veiculo v1 = new Veiculo();
+                System.out.println("Tipo do veículo (Ex: moto, carro...): ");
+                v1.setTipo(tc.nextLine());
+
+                System.out.println("Placa do veículo (Ex: XXXX-YYY): ");
+                v1.setPlaca(tc.nextLine());
+
+                System.out.println("Marca do veículo: ");
+                v1.setMarca(tc.nextLine());
+
+                System.out.println("Cor do veículo: ");
+                v1.setCor(tc.nextLine());
+                
+                System.out.println("Insira o horário inicial fictício (HH:mm:ss): ");
+                String horaInicio = tc.nextLine();
+                est.entrarS(horaInicio, v1);
+
+                System.out.println("Você está indo embora? (SIM - 0 | NÃO - 1): ");
+                Byte r = tc.nextByte();
+                tc.nextLine();
+
+                if (r == 0) {
+                    System.out.println("Insira o horário final fictício (HH:mm:ss): ");
+                    String horaFim = tc.nextLine();
+                    est.sairS(horaFim, v1);
+                }
+            }
+            //Opção 4
+            if (res == 4) {
+                System.out.println("Qual a placa do veículo a ser retirado?");
+                String placa = tc.nextLine();
+                int vaga = est.encontrarVeiculoPorPlaca(placa);
+
+                if (vaga == -1) {
+                    System.out.println("❌ Veículo não encontrado!");
+                } else {
+                    Veiculo v1 = new Veiculo();
+                    v1.setPlaca(placa);
+                    est.sairR(v1);
+                }
+            }
+            //Opção 5
+            if( res == 5){
+                est.mostrarPlacas();
+            }
+            //Opção 6
+            if( res == 6){
+                est.faturamentoTotal();
+            }
+
+        }
+
+        System.out.println("Saindo do sistema...");
+        tc.close();
+    }
+}
+
+
+
+
+ 
